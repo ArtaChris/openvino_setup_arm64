@@ -1,0 +1,39 @@
+sudo apt install build-essential git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev -y
+cd ~/
+wget https://github.com/Kitware/CMake/releases/download/v3.14.4/cmake-3.14.4.tar.gz
+sudo tar xvzf cmake-3.14.4.tar.gz
+cd ~/cmake-3.14.4
+sudo ./bootstrap
+sudo make -j1
+sudo make install
+cd ~/
+git clone https://github.com/opencv/opencv.git
+cd opencv && mkdir build && cd build
+sudo cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local ..
+sudo make -j1
+sudo make install
+cd ~/
+git clone https://github.com/openvinotoolkit/openvino.git
+cd ~/openvino/inference-engine
+git submodule update --init --recursive
+cd ~/openvino
+sudo sh ./install_build_dependencies.sh
+sudo export OpenCV_DIR=/usr/local/lib
+cd ~/openvino
+mkdir build && cd build
+sudo cmake -DCMAKE_BUILD_TYPE=Release -DENABLE_MKL_DNN=OFF -DENABLE_CLDNN=ON -DENABLE_GNA=OFF  -DENABLE_SSE42=OFF -DTHREADING=SEQ -DENABLE_SAMPLES=ON ..
+sudo make -j1
+sudo make install
+mkdir ~/models
+cd ~/models
+wget https://download.01.org/opencv/2019/open_model_zoo/R1/models_bin/age-gender-recognition-retail-0013/FP16/age-gender-recognition-retail-0013.xml
+wget https://download.01.org/opencv/2019/open_model_zoo/R1/models_bin/age-gender-recognition-retail-0013/FP16/age-gender-recognition-retail-0013.bin
+mkdir ~/OpenVINO/ && cd ~/OpenVINO
+wget http://software.intel.com/content/dam/develop/external/us/en/documents/Setup%20Additional%20Files%20Package.tar.gz
+sudo tar xvzf Setup\ Additional\ Files\ Package.tar.gz
+sudo usermod -a -G users "$(whoami)"
+sudo cp ~/OpenVINO/97-myriad-usbboot.rules_.txt /etc/udev/rules.d/97-myriad-usbboot.rules
+sudo udevadm control --reload-rules
+sudo udevadm trigger 
+sudo ldconfig
+sudo reboot
