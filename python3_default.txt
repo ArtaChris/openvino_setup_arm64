@@ -1,3 +1,4 @@
-sudo update-alternatives --install /usr/bin/python python /usr/bin/python2 1
-sudo update-alternatives --install /usr/bin/python python /usr/bin/python3 2
+sudo update-alternatives --install /usr/bin/python python $(which python2) 1
+sudo update-alternatives --install /usr/bin/python python $(which python3) 2
 sudo update-alternatives --config python
+2
