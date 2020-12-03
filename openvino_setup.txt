@@ -1,29 +1,72 @@
-sudo apt install build-essential git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev -y
+sudo -E apt install -y build-essential ffmpeg-dev /
+    git libgtk2.0-dev pkg-config libavcodec-dev /
+    libavformat-dev libswscale-dev libgstreamer-plugins-base1.0v-dev
+
 cd ~/
-wget https://github.com/Kitware/CMake/releases/download/v3.14.4/cmake-3.14.4.tar.gz
-sudo tar xvzf cmake-3.14.4.tar.gz
-cd ~/cmake-3.14.4
+wget https://github.com/Kitware/CMake/releases/download/v3.18.4/cmake-3.18.4.tar.gz
+sudo tar xvzf cmake-3.18.4.tar.gz
+cd ~/cmake-3.18.4
 sudo ./bootstrap
-sudo make -j1
+sudo make -j2
 sudo make install
+sudo rm -rf cmake-3.18.4 cmake-3.18.4.tar.gz
+
+sudo pip3 install numpy scipy cython
+
 cd ~/
 git clone https://github.com/opencv/opencv.git
 cd opencv && mkdir build && cd build
 sudo cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local ..
-sudo make -j1
+sudo make -j2
 sudo make install
+
 cd ~/
 git clone https://github.com/openvinotoolkit/openvino.git
 cd ~/openvino/inference-engine
 git submodule update --init --recursive
 cd ~/openvino
-sudo sh ./install_build_dependencies.sh
+
+# sudo sh ./install_build_dependencies.sh
+
+sudo -E apt update
+sudo -E apt install -y \
+        build-essential \
+        curl \
+        wget \
+        libssl-dev \
+        ca-certificates \
+        git \
+        libboost-regex-dev \
+        libgtk2.0-dev \
+        pkg-config \
+        unzip \
+        automake \
+        libtool \
+        autoconf \
+        libcairo2-dev \
+        libpango1.0-dev \
+        libglib2.0-dev \
+        libgtk2.0-dev \
+        libswscale-dev \
+        libavcodec-dev \
+        libavformat-dev \
+        libgstreamer1.0-0 \
+        gstreamer1.0-plugins-base \
+        libusb-1.0-0-dev \
+        libopenblas-dev
+if apt-cache search --names-only '^libpng12-dev'| grep -q libpng12; then
+    sudo -E apt install -y libpng12-dev
+else
+    sudo -E apt install -y libpng-dev
+fi
+
 sudo export OpenCV_DIR=/usr/local/lib
 cd ~/openvino
 mkdir build && cd build
 sudo cmake -DCMAKE_BUILD_TYPE=Release -DENABLE_MKL_DNN=OFF -DENABLE_CLDNN=ON -DENABLE_GNA=OFF  -DENABLE_SSE42=OFF -DTHREADING=SEQ -DENABLE_SAMPLES=ON ..
-sudo make -j1
+sudo make -j4
 sudo make install
+
 mkdir ~/models
 cd ~/models
 wget https://download.01.org/opencv/2019/open_model_zoo/R1/models_bin/age-gender-recognition-retail-0013/FP16/age-gender-recognition-retail-0013.xml
