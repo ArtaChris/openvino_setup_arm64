@@ -1,15 +1,16 @@
 sudo -E apt install -y build-essential ffmpeg-dev /
     git libgtk2.0-dev pkg-config libavcodec-dev /
-    libavformat-dev libswscale-dev libgstreamer-plugins-base1.0v-dev
+    libavformat-dev libswscale-dev /
+    libgstreamer-plugins-base1.0v-dev
 
 cd ~/
-wget https://github.com/Kitware/CMake/releases/download/v3.18.4/cmake-3.18.4.tar.gz
-sudo tar xvzf cmake-3.18.4.tar.gz
-cd ~/cmake-3.18.4
+wget https://github.com/Kitware/CMake/releases/download/v3.14.7cmake-3.14.7tar.gz
+sudo tar xvzf cmake-3.14.7.tar.gz
+cd ~/cmake-3.14.7
 sudo ./bootstrap
-sudo make -j2
+sudo make -j4
 sudo make install
-sudo rm -rf cmake-3.18.4 cmake-3.18.4.tar.gz
+sudo rm -rf cmake-3.14.7 cmake-3.14.7.tar.gz
 
 sudo pip3 install numpy scipy cython
 
@@ -17,7 +18,7 @@ cd ~/
 git clone https://github.com/opencv/opencv.git
 cd opencv && mkdir build && cd build
 sudo cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr/local ..
-sudo make -j2
+sudo make -j4
 sudo make install
 
 cd ~/
@@ -67,7 +68,13 @@ sudo cmake -DCMAKE_BUILD_TYPE=Release -DENABLE_MKL_DNN=OFF -DENABLE_CLDNN=ON -DE
 sudo make -j4
 sudo make install
 
-mkdir ~/models
+cd ~/
+git clone https://github.com/openvinotoolkit/open_model_zoo.git
+cd ~/open_model_zoo/tools/
+sudo python3 -m pip install --user -r ./requirements.in
+sudo ./downloader.py --all --output_dir ~/models --precisions FP16,FP16-INT,FP16-INT8 -j4
+
+# mkdir ~/models
 cd ~/models
 wget https://download.01.org/opencv/2019/open_model_zoo/R1/models_bin/age-gender-recognition-retail-0013/FP16/age-gender-recognition-retail-0013.xml
 wget https://download.01.org/opencv/2019/open_model_zoo/R1/models_bin/age-gender-recognition-retail-0013/FP16/age-gender-recognition-retail-0013.bin
