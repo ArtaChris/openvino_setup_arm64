@@ -72,7 +72,7 @@ cd ~/
 git clone https://github.com/openvinotoolkit/open_model_zoo.git
 cd ~/open_model_zoo/tools/
 sudo python3 -m pip install --user -r ./requirements.in
-sudo ./downloader.py --all --output_dir ~/models --precisions FP16,FP16-INT1,FP16-INT8 -j4
+sudo ./downloader.py --all --output_dir ~/models --precisions FP16,FP16-INT8 -j4
 
 cd ~/
 git clone https://github.com/movidius/ncappzoo.git
