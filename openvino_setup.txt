@@ -74,6 +74,9 @@ cd ~/open_model_zoo/tools/
 sudo python3 -m pip install --user -r ./requirements.in
 sudo ./downloader.py --all --output_dir ~/models --precisions FP16,FP16-INT,FP16-INT8 -j4
 
+cd ~/
+git clone https://github.com/movidius/ncappzoo.git
+
 # mkdir ~/models
 cd ~/models
 wget https://download.01.org/opencv/2019/open_model_zoo/R1/models_bin/age-gender-recognition-retail-0013/FP16/age-gender-recognition-retail-0013.xml
