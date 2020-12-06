@@ -1,4 +1,13 @@
-sudo -E apt install -y build-essential ffmpeg-dev git libgtk2.0-dev pkg-config libavcodec-dev libavformat-dev libswscale-dev libgstreamer-plugins-base1.0-dev
+sudo -E apt install -y \
+        build-essential \
+        ffmpeg-dev \
+        git \
+        libgtk2.0-dev \
+        pkg-config \
+        libavcodec-dev \
+        libavformat-dev \
+        libswscale-dev \
+        libgstreamer-plugins-base1.0-dev
 
 cd ~/
 wget https://github.com/Kitware/CMake/releases/download/v3.14.7/cmake-3.14.7.tar.gz
@@ -59,17 +68,45 @@ fi
 sudo export OpenCV_DIR=/usr/local/lib
 cd ~/openvino
 mkdir build && cd build
-sudo cmake -DCMAKE_BUILD_TYPE=Release -DENABLE_MKL_DNN=OFF -DENABLE_CLDNN=ON -DENABLE_GNA=OFF  -DENABLE_SSE42=OFF -DTHREADING=SEQ -DENABLE_SAMPLES=ON ..
+sudo cmake -DCMAKE_BUILD_TYPE=Release \
+           -DENABLE_MKL_DNN=OFF \
+           -DENABLE_CLDNN=ON \
+           -DENABLE_GNA=OFF \
+           -DENABLE_SSE42=OFF \
+           -DTHREADING=SEQ \
+           -DENABLE_SAMPLES=ON \
+           ..
 sudo make -j4
 sudo make install
 
+cd ~/openvino/model-optmizer
+pip3 install -r requirements.txt
+
+sudo apt-get install protobuf-compiler libprotoc-dev
 cd ~/
+git clone https://github.com/onnx/onnx.git
+cd onnx
+git submodule update --init --recursive
+python setup.py install
+
+sudo apt install caffe-cpu
+
+cd ~/
+git clone https://github.com/tiran/defusedxml.git
+cd ~/defusedxml
+git submodule update --init --recursive
+python setup.py install
+
+cd ~/
+git clone https://github.com/movidius/ncappzoo.git
+
+cd ~/
+mkdir ~/models
 git clone https://github.com/openvinotoolkit/open_model_zoo.git
 cd ~/open_model_zoo/tools/downloader
 sudo python3 -m pip install --user -r ./requirements.in
-# sudo ./downloader.py --all --output_dir ~/models --precisions FP16,FP16-INT8 -j4
+sudo ./downloader.py --all --output_dir ~/models --precisions FP16 -j4
 
-mkdir ~/models
 cd ~/models
 wget https://download.01.org/opencv/2019/open_model_zoo/R1/models_bin/age-gender-recognition-retail-0013/FP16/age-gender-recognition-retail-0013.xml
 wget https://download.01.org/opencv/2019/open_model_zoo/R1/models_bin/age-gender-recognition-retail-0013/FP16/age-gender-recognition-retail-0013.bin
